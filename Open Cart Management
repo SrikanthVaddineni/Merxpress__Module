@@ -1,0 +1,72 @@
+class Order:
+    def __init__(self, order_id, customer_name, items, total_amount):
+        self.order_id = order_id
+        self.customer_name = customer_name
+        self.items = items
+        self.total_amount = total_amount
+        self.status = "Pending"
+
+    def __str__(self):
+        return f"Order ID: {self.order_id}, Customer: {self.customer_name}, Status: {self.status}"
+
+class OrderManagementSystem:
+    def __init__(self):
+        self.orders = []
+        self.next_order_id = 1
+
+    def place_order(self, customer_name, items, total_amount):
+        order = Order(self.next_order_id, customer_name, items, total_amount)
+        self.next_order_id += 1
+        self.orders.append(order)
+        return order
+
+    def track_order(self, order_id):
+        for order in self.orders:
+            if order.order_id == order_id:
+                return order
+        return None
+
+    def cancel_order(self, order_id):
+        for order in self.orders:
+            if order.order_id == order_id and order.status == "Pending":
+                order.status = "Cancelled"
+                return True
+        return False
+
+    def process_return(self, order_id):
+        for order in self.orders:
+            if order.order_id == order_id and order.status == "Delivered":
+                order.status = "Returned"
+                return True
+        return False
+
+    def refund_order(self, order_id):
+        for order in self.orders:
+            if order.order_id == order_id and order.status == "Returned":
+                order.status = "Refunded"
+                return True
+        return False
+
+# Example usage
+if __name__ == "__main__":
+    order_system = OrderManagementSystem()
+
+    # Place an order
+    order1 = order_system.place_order("John Doe", ["Product A", "Product B"], 100.0)
+    print(order1)
+
+    # Track an order
+    tracked_order = order_system.track_order(order1.order_id)
+    print(tracked_order)
+
+    # Cancel an order
+    order_system.cancel_order(order1.order_id)
+    print(order1)
+
+    # Process a return
+    order_system.process_return(order1.order_id)
+    print(order1)
+
+    # Refund an order
+    order_system.refund_order(order1.order_id)
+    print(order1)
